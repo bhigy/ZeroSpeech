@@ -1,0 +1,5 @@
+dataset:
+  dataset: flickr8k
+  language: english
+  path: flickr8k/english
+  n_speakers: 183
