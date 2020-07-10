@@ -1,0 +1,5 @@
+dataset:
+  dataset: flickr8k
+  language: english_triplets
+  path: flickr8k/english_triplets
+  n_speakers: 183

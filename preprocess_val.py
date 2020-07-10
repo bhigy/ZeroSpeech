@@ -58,7 +58,7 @@ def preprocess_dataset(cfg):
     out_dir.mkdir(parents=True, exist_ok=True)
 
     executor = ProcessPoolExecutor(max_workers=cpu_count())
-    for split in ["train", "val", "test"]:
+    for split in ["val"]:
         print("Extracting features for {} set".format(split))
         futures = []
         split_path = out_dir / cfg.dataset.language / split
