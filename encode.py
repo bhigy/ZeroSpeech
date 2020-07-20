@@ -21,7 +21,7 @@ def encode_dataset(cfg):
         aux_path.mkdir(exist_ok=True, parents=True)
 
     root_path = Path(utils.to_absolute_path("datasets")) / cfg.dataset.path
-    with open(root_path / "test.json") as file:
+    with open(root_path / cfg.json_fname) as file:
         metadata = json.load(file)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -29,10 +29,11 @@ def encode_dataset(cfg):
     encoder = Encoder(**cfg.model.encoder)
     encoder.to(device)
 
-    print("Load checkpoint from: {}:".format(cfg.checkpoint))
-    checkpoint_path = utils.to_absolute_path(cfg.checkpoint)
-    checkpoint = torch.load(checkpoint_path, map_location=lambda storage, loc: storage)
-    encoder.load_state_dict(checkpoint["encoder"])
+    if 'checkpoint' in cfg:
+        print("Load checkpoint from: {}:".format(cfg.checkpoint))
+        checkpoint_path = utils.to_absolute_path(cfg.checkpoint)
+        checkpoint = torch.load(checkpoint_path, map_location=lambda storage, loc: storage)
+        encoder.load_state_dict(checkpoint["encoder"])
 
     encoder.eval()
 
@@ -50,11 +51,18 @@ def encode_dataset(cfg):
         with torch.no_grad():
             z, indices = encoder.encode(mel)
 
-        z = z.squeeze().cpu().numpy()
+        if cfg.encoding == 'z':
+            enc = z
+            fmt = "%.16f"
+        elif cfg.encoding == 'indices':
+            enc = torch.nn.functional.one_hot(
+                indices, num_classes=cfg.model.encoder.n_embeddings)
+            fmt = "%i"
+        enc = enc.squeeze().cpu().numpy().astype(int)
 
         out_path = out_dir / path.stem
         with open(out_path.with_suffix(".txt"), "w") as file:
-            np.savetxt(file, z, fmt="%.16f")
+            np.savetxt(file, enc, fmt=fmt)
 
         if cfg.save_auxiliary:
             out_path = aux_path / path.stem
@@ -64,4 +72,5 @@ def encode_dataset(cfg):
 
 
 if __name__ == "__main__":
+
     encode_dataset()

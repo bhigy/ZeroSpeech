@@ -6,3 +6,5 @@ defaults:
 checkpoint: ???
 out_dir: ???
 save_auxiliary: False
+json_fname: val.json
+encoding: z
