@@ -58,7 +58,7 @@ def encode_dataset(cfg):
             enc = torch.nn.functional.one_hot(
                 indices, num_classes=cfg.model.encoder.n_embeddings)
             fmt = "%i"
-        enc = enc.squeeze().cpu().numpy().astype(int)
+        enc = enc.squeeze().cpu().numpy()
 
         out_path = out_dir / path.stem
         with open(out_path.with_suffix(".txt"), "w") as file:
