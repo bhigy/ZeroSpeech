@@ -6,3 +6,4 @@ defaults:
 
 resume: False
 checkpoint_dir: ???
+seed: 123

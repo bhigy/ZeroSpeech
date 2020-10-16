@@ -2,6 +2,7 @@ import hydra
 from hydra import utils
 from itertools import chain
 from pathlib import Path
+import random
 from tqdm import tqdm
 
 import apex.amp as amp
@@ -31,6 +32,8 @@ def save_checkpoint(encoder, decoder, optimizer, amp, scheduler, step, checkpoin
 
 @hydra.main(config_path="config/train.yaml")
 def train_model(cfg):
+    torch.manual_seed(cfg.seed)
+    random.seed(cfg.seed)
     tensorboard_path = Path(utils.to_absolute_path("tensorboard")) / cfg.checkpoint_dir
     checkpoint_dir = Path(utils.to_absolute_path(cfg.checkpoint_dir))
     writer = SummaryWriter(tensorboard_path)
