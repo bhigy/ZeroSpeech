@@ -7,19 +7,16 @@ for seed in 123 1837493790 2147483647; do
                     out_dir=submission/flickr8k/r$run/$subset/val/$size/$encoding/$mode/encodings
                     mkdir -p $out_dir
                     if [ "$mode" = "trained" ]; then
-                        python encode.py \
-                            model.encoder.n_embeddings=$size \
-                            checkpoint=checkpoints/2019english/$size/$seed/model.ckpt-500000.pt \
-                            out_dir=$out_dir \
-                            dataset=flickr8k/$subset \
-                            encoding=$encoding
+                        checkpoint=checkpoints/2019english/$size/$seed/model.ckpt-500000.pt \
                     else
-                        python encode.py \
-                            model.encoder.n_embeddings=$size \
-                            out_dir=$out_dir \
-                            dataset=flickr8k/$subset \
-                            encoding=$encoding
+                        checkpoint=checkpoints/2019english/$size/$seed/model.ckpt-0.pt \
                     fi
+                    python encode.py \
+                        model.encoder.n_embeddings=$size \
+                        checkpoint=$checkpoint \
+                        out_dir=$out_dir \
+                        dataset=flickr8k/$subset \
+                        encoding=$encoding
                 done
             done
         done

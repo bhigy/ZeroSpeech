@@ -44,6 +44,7 @@ def train_model(cfg):
     encoder.to(device)
     decoder.to(device)
 
+
     optimizer = optim.Adam(
         chain(encoder.parameters(), decoder.parameters()),
         lr=cfg.training.optimizer.lr)
@@ -64,6 +65,8 @@ def train_model(cfg):
         global_step = checkpoint["step"]
     else:
         global_step = 0
+        # Save untrained model
+        save_checkpoint(encoder, decoder, optimizer, amp, scheduler, global_step, checkpoint_dir)
 
     root_path = Path(utils.to_absolute_path("datasets")) / cfg.dataset.path
     dataset = SpeechDataset(
